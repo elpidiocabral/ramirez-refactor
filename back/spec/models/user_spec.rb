@@ -15,32 +15,14 @@ end
 
 describe User do 
   it "cadastro é válido apenas quando as senhas são compativeis" do 
-   user = User.new( name: 'Lici',  
-    email: 'alicepotter@gmail.com',
-    password: '12345678',
-    password_confirmation: '87654321',
-    specialization:['Natureza','Astronomia'],
-    city: 'Mombaça',
-    photographer: false,
-     ) 
+    user = UserBuilder.new
+      .personal_info('Lici', 'alicepotter@gmail.com', '12345678', '12345678')
+      .profile_info('Ceará', 'Mombaça', 'Fotógrafo de natureza')
+      .optional_info(['Natureza','Astronomia'], 100, false)
+      .build
 
+    # return
     expect(user).not_to be_nil
-    
-   end 
+  end 
 
-  #  describe User do 
-  #   it "cadastro é inválido quando a especialização é inexistente" do 
-  #    user = User.new( name: 'Lici',  
-  #     email: 'alicepotter@gmail.com',
-  #     password: '12345678',
-  #     password_confirmation: '87654321',
-  #     specialization:['Natureza','Cachorro Fofinhos'],
-  #     city: 'Mombaça',
-  #     photographer: false,
-  #      ) 
-  
-  #     expect(user).not_to be_nil
-      
-  #    end 
-   
- end
+end
