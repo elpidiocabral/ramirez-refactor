@@ -17,7 +17,6 @@ class CommentsController < ApplicationController
   # POST /comments
   def create
     user = authorize_request
-    return if user.nil?
 
     begin
       post = PostService.get_post(comment_params[:user_id], comment_params[:post_id])
@@ -35,7 +34,6 @@ class CommentsController < ApplicationController
   # POST /comments/1
   def like
     user = authorize_request
-    return if user.nil?
 
     com_params = params.require(:comments).permit(:post_id, :author_id, :id)
     begin
@@ -52,7 +50,6 @@ class CommentsController < ApplicationController
   # DELETE /comments/1
   def destroy
     user = authorize_request
-    return if user.nil?
 
     unless user.id == @comment.user_id
       return render json: { error: 'Specified user is not the owner of the comment' }, status: :bad_request

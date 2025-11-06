@@ -16,12 +16,12 @@ class PostsController < ApplicationController
   # POST /posts
   def create
     user = authorize_request
-    return if user.nil? || params[:image].nil?
+    return if params[:image].nil?
     return render json: { error: 'User is not a photographer' } unless user.photographer
     
     bucket = FireStorageService.instance.img_bucket
     file_uploaded = params[:image].tempfile
-    filename = PostService.parse_filename(user.name, params[:image].content_type)
+    filename = PostService.parse_filename(user.name, params[:image].content_type) # strategy pattern aplicando o parse no constrututor
     res = bucket.create_file(file_uploaded, filename)
     post_hash = PostService.post_params(params[:title], params[:price], res.name)
     
@@ -37,7 +37,6 @@ class PostsController < ApplicationController
   # POST /posts/1
   def like
     user = authorize_request
-    return if user.nil?
 
 
   end
@@ -45,7 +44,6 @@ class PostsController < ApplicationController
   # DELETE /posts/1
   def destroy
     user = authorize_request
-    return if user.nil?
 
     begin 
       post = user.posts.find(params[:id])

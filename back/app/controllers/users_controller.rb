@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def index
     #return render json: { error: 'Page field must be integer' }, status: :bad_request unless FiltersService.check_pagination(params[:page])
     
-    filters = FiltersService.matching_params(request.GET)
+    filters = FiltersService.matching_params(request.GET) # singleton: FiltersService.instance.matching_params
     location = FiltersService.location_params(request.GET[:location])
     order = FiltersService.order_params(request.GET[:orderBy])
     price = FiltersService.price_params(min_price: request.GET[:minPrice], max_price: request.GET[:maxPrice])
@@ -19,7 +19,6 @@ class UsersController < ApplicationController
   # GET user/1
   def user_data
     user = authorize_request
-    return if user.nil?
     #return render json: { error: 'User cookie and id dont match' }, status: :bad_request if user.id.to_s != params[:id]
 
     render json: User.where(id: params[:id]).first, status: :ok
@@ -65,7 +64,6 @@ class UsersController < ApplicationController
   # PUT /users/profile_image
   def profile_image
     user = authorize_request
-    return if user.nil?
 
     bucket = FireStorageService.instance.img_bucket
     file = params[:image]
@@ -83,7 +81,6 @@ class UsersController < ApplicationController
   # PUT /users/1
   def update
     user = authorize_request
-    return if user.nil?
     return render json: { error: 'Invalid user token' }, status: :unprocessable_entity if user.id.to_s != params[:id]
 
     u_params = user_params
@@ -115,7 +112,6 @@ class UsersController < ApplicationController
 
     def get_photographer
       user = authorize_request
-      return nil if user.nil?
     
       User.find(params[:id])
     end

@@ -46,4 +46,12 @@ class User
     following.destroy!(other)
     other.followers.destroy!(id)
   end
+
+  class UserNull()
+    include Singleton
+
+    def method_missing(method_name, *args, &block)
+      nil
+    end
+  end
 end
