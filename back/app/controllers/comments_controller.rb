@@ -19,8 +19,7 @@ class CommentsController < ApplicationController
     user = authorize_request
 
     begin
-      post = PostService.get_post(comment_params[:user_id], comment_params[:post_id])
-      raise Mongoid::Errors::DocumentNotFound.new(Post, comment_params[:post_id]), 'Post not found' if post.nil?
+      raise(*create_object_error) if @post.nil?
 
       comment = post.comments.create!({ user_id: user.id, content: comment_params[:content] })
       render json: comment, status: :created
@@ -34,13 +33,12 @@ class CommentsController < ApplicationController
   # POST /comments/1
   def like
     user = authorize_request
-
     com_params = params.require(:comments).permit(:post_id, :author_id, :id)
-    begin
-      post = PostService.get_post(com_params[:author_id], com_params[:post_id])
-      raise self::InvalidPostException.new, 'This author is not the owner of the specified post' if post.nil?
 
-      comment = CommentService.get_comment(com_params[:id], post)
+    begin
+      raise(*create_object_error) if @post.nil?
+
+      comment = CommentService.get_comment(com_params[:id], @post)
       render LikeService.like(user.id, comment)
     rescue StandardError => e
       render json: { error: e }, status: :bad_request
@@ -59,7 +57,10 @@ class CommentsController < ApplicationController
   end
 
   private
-  
+  def post
+    @post = PostService.get_post(params[:author_id], params[:post_id])
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
