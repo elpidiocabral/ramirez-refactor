@@ -37,8 +37,6 @@ class PostsController < ApplicationController
   # POST /posts/1
   def like
     user = authorize_request
-
-
   end
 
   # DELETE /posts/1
