@@ -5,12 +5,11 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    #return render json: { error: 'Page field must be integer' }, status: :bad_request unless FiltersService.check_pagination(params[:page])
     
-    filters = FiltersService.matching_params(request.GET) # singleton: FiltersService.instance.matching_params
-    location = FiltersService.location_params(request.GET[:location])
-    order = FiltersService.order_params(request.GET[:orderBy])
-    price = FiltersService.price_params(min_price: request.GET[:minPrice], max_price: request.GET[:maxPrice])
+    filters = FiltersService.instance.matching_params(request.GET) 
+    location = FiltersService.instance.location_params(request.GET[:location])
+    order = FiltersService.instance.order_params(request.GET[:orderBy])
+    price = FiltersService.instance.price_params(min_price: request.GET[:minPrice], max_price: request.GET[:maxPrice])
     @users = User.where(filters.merge(price)).only(UserService.search_view).order_by(order)
     @users = @users.any_of(*location) unless location.empty?
     render json: @users
@@ -19,7 +18,6 @@ class UsersController < ApplicationController
   # GET user/1
   def user_data
     user = authorize_request
-    #return render json: { error: 'User cookie and id dont match' }, status: :bad_request if user.id.to_s != params[:id]
 
     render json: User.where(id: params[:id]).first, status: :ok
   end

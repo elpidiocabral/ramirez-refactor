@@ -1,24 +1,26 @@
-module FiltersService
-  def self.matching_params(params)
+class FiltersService
+  include Singleton
+
+  def matching_params(params)
     new_hash = { photographer: true }
     params.each_pair { |k, v| new_hash[k.to_sym] = v if check_param(k, v) }
     new_hash[:name] = /.*#{params[:name]}.*/ unless !params.key?(:name) || params[:name] == ''
     new_hash
   end
   
-  def self.location_params(location)
+  def location_params(location)
     locate = []
     locate = [{ city: location }, { state: location }] unless location.nil? || location == ''
     locate
   end
 
-  def self.order_params(order_by)
+  def order_params(order_by)
     order = {}
     order = { order_by.to_sym => :desc } if order_by != '' && %w[likes views price].include?(order_by)
     order
   end
 
-  def self.price_params(params)
+  def price_params(params)
     min_price = (params[:min_price].nil? ? nil : params[:min_price].to_f)
     max_price = (params[:max_price].nil? ? nil : params[:max_price].to_f)
 
@@ -30,11 +32,11 @@ module FiltersService
     { :services_price.elem_match => { :$gte => min_price, :$lte => max_price } }
   end
 
-  def self.check_pagination(page)
+  def check_pagination(page)
     page.nil? || page.is_a?(Integer) || (page.is_a?(String) && !Integer(page).nil?)
   end
 
-  def self.check_param(key, value)
+  def check_param(key, value)
     key = key.to_sym
     condition1 = %i[name specialization].include?(key)
     condition2 = value != "" && !value.nil?
