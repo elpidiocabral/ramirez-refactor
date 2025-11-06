@@ -1,6 +1,8 @@
-# Ramirez
+# Ramirez Refactor
 
 Projeto para construir um portfólio para fotógrafos e clientes que procuram por um profissional en sua carreira específica.
+
+## [Documentação da Refatoração](https://docs.google.com/document/d/17XpByRQ_kRqofS7pa9RfFsHAKfYsjZVaERZEcUWOPWM/edit?usp=sharing) 
 
 Tática utilizada:  
 [React on Rails](https://www.bacancytechnology.com/blog/react-with-rails)
