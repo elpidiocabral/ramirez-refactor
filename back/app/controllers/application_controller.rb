@@ -1,11 +1,8 @@
 class ApplicationController < ActionController::API
   before_action :set_header
 
-  def authorize_request # long method, possível aplicação de facada para fazer o decode do @current_user
-    return User.find_by(email: 'guthyerri@davi.alice') unless @header != 'debug'
-
-    decoded = JsonWebToken.decode(@header)
-    @current_user = User.without(:password_digest).find(decoded[:user_id])
+  def authorize_request
+    @current_user = UserAuthFacade.new(@header).decode_user
     return @current_user ? @current_user : UserNull.instance
     
   rescue JWT::DecodeError => e
